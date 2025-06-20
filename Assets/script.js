@@ -1,5 +1,6 @@
 $(document).ready(function () {
     showAllTasks();
+    $('.filter-btn[data-status="all"]').addClass('active');
 
     $('#addTask').submit(function (e) {
         e.preventDefault();
@@ -58,7 +59,7 @@ $(document).ready(function () {
     }
     
     // show all tasks function
-    function showAllTasks() {
+    function showAllTasks(filter = 'all') {
 
         $.ajax({
             type: 'GET',
@@ -66,7 +67,13 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (tasks) {
                 let taskList = '';
-                tasks.forEach(task => {
+                const $filteredTasks = tasks.filter(task => {
+                    if (filter === 'all') return true;
+                    return task.status === filter;
+                    }
+                );  
+
+                $filteredTasks.forEach(task => {
                     const checked = task.status === 'completed' ? 'checked' : '';
                     const lineThrough = task.status === 'completed' ? 'text-decoration-line-through' : '';
 
@@ -248,4 +255,11 @@ $(document).ready(function () {
     }
     );
 
+    // filter tasks
+    $(document).on('click', '.filter-btn', function () {
+        const status = $(this).data('status');
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        showAllTasks(status);
+    });
 });
