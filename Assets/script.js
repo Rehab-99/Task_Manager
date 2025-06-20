@@ -23,7 +23,9 @@ $(document).ready(function () {
             data: formData,
             dataType: 'json',
             success: function (response) {
-                showAlert('Task added successfully!', 'success');
+                if(response.message) {
+                    showAlert(response.message, 'success');
+                }
                 $('input[name="title"]').val('');
                 $('input[name="description"]').val('');
                 showAllTasks();
@@ -57,7 +59,6 @@ $(document).ready(function () {
     
     // show all tasks function
     function showAllTasks() {
-        console.log('showAllTasks() is running...');
 
         $.ajax({
             type: 'GET',
@@ -66,10 +67,16 @@ $(document).ready(function () {
             success: function (tasks) {
                 let taskList = '';
                 tasks.forEach(task => {
+                    const checked = task.status === 'completed' ? 'checked' : '';
+                    const lineThrough = task.status === 'completed' ? 'text-decoration-line-through' : '';
+
                     taskList += `
                         <tr>
-                            <td>${task.title}</td>
-                            <td>${task.description}</td>
+                            <td class="${lineThrough}">
+                                <input type="checkbox" class="form-check-input me-2 status-checkbox" data-id="${task.id}" ${checked}>
+                                ${task.title}
+                            </td>
+                            <td class="${lineThrough}">${task.description}</td>
                             <td>${task.status}</td>
                             <td>
                                 <button class="btn btn-sm btn-success edit-btn" 
@@ -121,7 +128,7 @@ $(document).ready(function () {
     $('#editTaskForm').submit(function (e) {
         e.preventDefault();
 
-        const id = $('.edit-btn').data('id');
+        const id = $('#edit-id').val();
         const title = $('#edit-title').val();
         const description = $('#edit-description').val();
         const status = $('#edit-status').val();
@@ -161,5 +168,84 @@ $(document).ready(function () {
             }
         });
     });
+
+    // delete task
+    $(document).on('click', '.delete-btn', function () {
+        const id = $(this).data('id');
+
+        Swal.fire({
+        title: 'Are you sure?',
+        text: 'You Want to delete this task ?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                type: 'POST',
+                url: 'api/delete_task.php',
+                data: { id: id },
+                dataType: 'json',
+                success: function (response) {   
+                    if(response.message) {
+                        showAlert(response.message, 'success');
+                        showAllTasks();
+                    }else {
+                        showAlert('Unexpected response', 'warning');
+                    }   
+                },
+                error: function (xhr) { 
+                    let message = 'An error occurred';
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.error) {
+                            message = response.error || message;
+                        }
+                    } catch (e) {
+                        message = xhr.responseText || message;
+                    }   
+                    showAlert(message, 'danger');
+                }
+            });
+            }
+        });
+    });
+
+    //update task status
+    $(document).on('change', '.status-checkbox', function () {
+        const id = $(this).data('id');
+        const status = $(this).is(':checked') ? 'completed' : 'pending';
+
+        $.ajax({
+            type: 'POST',
+            url: 'api/update_task.php',
+            data: { id: id, status: status },
+            dataType: 'json',
+            success: function (response) {
+                if(response.message) {
+                    showAlert(response.message, 'success');
+                } else {
+                    showAlert('Unexpected response', 'warning');
+                }
+                showAllTasks();
+            },
+            error: function (xhr) {
+                let message = 'An error occurred';
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.error) {
+                        message = response.error || message;
+                    }
+                } catch (e) {
+                    message = xhr.responseText || message;
+                }
+                showAlert(message, 'danger');
+            }
+        });
+    }
+    );
 
 });
