@@ -13,6 +13,7 @@ A simple task management web app built with **PHP**, **MySQL**, **jQuery (AJAX)*
 
 ## 📂 Project Structure
 
+```
 project/
 ├── api/
 │ ├── create_task.php
@@ -31,6 +32,7 @@ project/
 ├── database.php
 ├── index.php
 └── README.md
+```
 
 
 
@@ -54,9 +56,9 @@ project/
 
 ## 📸 Screenshot
 
-![Task Manager Screenshot](assets/images/img1.png)
-![Edit Task](assets/images/edit-task.png)
-![Delete Task](assets/images/delete-task.png)
+![Task Manager Screenshot](./assets/images/img1.png)
+![Edit Task](./assets/images/edit-task.png)
+![Delete Task](./assets/images/delete-task.png)
 
 
 ---
