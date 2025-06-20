@@ -21,6 +21,7 @@ $(document).ready(function () {
             type: 'POST',
             url: 'api/create_task.php',
             data: formData,
+            dataType: 'json',
             success: function (response) {
                 showAlert('Task added successfully!', 'success');
                 $('input[name="title"]').val('');
@@ -71,7 +72,13 @@ $(document).ready(function () {
                             <td>${task.description}</td>
                             <td>${task.status}</td>
                             <td>
-                                <button class="btn btn-sm btn-success edit-btn" data-id="${task.id}">Edit</button>
+                                <button class="btn btn-sm btn-success edit-btn" 
+                                data-id="${task.id}"
+                                data-title="${task.title}"
+                                data-description="${task.description}"
+                                data-status="${task.status}"
+                                >Edit</button>
+                                
                                 <button class="btn btn-sm btn-danger delete-btn" data-id="${task.id}">Delete</button>
                             </td>
                         </tr> `;
@@ -93,4 +100,66 @@ $(document).ready(function () {
             }
         });
     }
+
+    // open edit modal
+    $(document).on('click', '.edit-btn', function () {
+        const id = $(this).data('id');
+        const title = $(this).data('title');
+        const description = $(this).data('description');
+        const status = $(this).data('status');
+
+        $('#edit-id').val(id);
+        $('#edit-title').val(title);
+        $('#edit-description').val(description);
+        $('#edit-status').val(status);
+
+        const modal = new bootstrap.Modal('#editTaskModal');
+        modal.show();
+    });
+
+    //update task
+    $('#editTaskForm').submit(function (e) {
+        e.preventDefault();
+
+        const id = $('.edit-btn').data('id');
+        const title = $('#edit-title').val();
+        const description = $('#edit-description').val();
+        const status = $('#edit-status').val();
+
+        const formData = {
+            id: id,
+            title: title,
+            description: description,
+            status: status
+        };
+        $.ajax({
+            type: 'POST',
+            url: 'api/update_task.php',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if(response.message === 'Task updated successfully!') {
+                    showAlert(response.message, 'success');
+                } else { 
+                    showAlert(response.message, 'info');
+                }
+
+                $('#editTaskModal').modal('hide');
+                showAllTasks();
+            },
+            error: function (xhr) {
+                let message = 'An error occurred';
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.error) {
+                        message = response.error || message;
+                    }
+                } catch (e) {
+                    message = xhr.responseText || message;
+                }
+                showAlert(message, 'danger');
+            }
+        });
+    });
+
 });

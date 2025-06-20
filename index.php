@@ -16,7 +16,7 @@
     <!-- add task -->
     <form id="addTask" class="row g-2 my-3">
         <div class="col-md-4">
-            <input type="text" name="title" class="form-control" placeholder="Task Title" >
+            <input type="text" name="title" class="form-control" placeholder="Task Title">
         </div>
         <div class="col-md-4">
             <input type="text" name="description" class="form-control" placeholder="Description">
@@ -52,7 +52,42 @@
         </div>
     </div>
 
-<!-- Scripts -->
+    <!-- Update Task Modal -->
+    <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="editTaskForm" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTaskLabel">Edit Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="mb-3">
+                        <label for="edit-title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="edit-title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="edit-description" name="description">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-status" class="form-label">Status</label>
+                        <select class="form-select" id="edit-status" name="status">
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Scripts -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
