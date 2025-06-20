@@ -56,9 +56,9 @@ project/
 
 ## 📸 Screenshot
 
-![Task Manager Screenshot](assets/images/img1.png)
-![Edit Task](assets/images/edit-task.png)
-![Delete Task](assets/images/delete-task.png)
+![Task Manager Screenshot](Assets/images/img1.png)
+![Edit Task](Assets/images/edit-task.png)
+![Delete Task](Assets/images/delete-task.png)
 
 
 ---
